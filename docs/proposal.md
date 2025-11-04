@@ -50,13 +50,6 @@
 - **Development Branch:** Integration branch for completed features
 - **Feature Branches:** Individual branches for each functionality
 
-**Initial Project Board Columns:**
-- Backlog
-- To Do (Milestone 1)
-- In Progress
-- Review
-- Done
-
 **High-Level Tasks by Milestone:**
 
 **Milestone 1 (Week 3):**
