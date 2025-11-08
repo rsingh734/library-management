@@ -1,18 +1,22 @@
-import express, { Application } from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import dotenv from 'dotenv';
+import express, { Request, Response } from 'express';
+import booksRoutes from './api/v1/routes/books.routes';
+import authorsRoutes from './api/v1/routes/authors.routes';
+import membersRoutes from './api/v1/routes/members.routes';
 
-dotenv.config();
+const app = express();
 
-const app: Application = express();
-
+// Built-in JSON middleware
 app.use(express.json());
-app.use(cors());
-app.use(helmet());
 
-app.get('/', (req, res) => {
-  res.send('Digital Library API is running');
+// Routes
+app.use('/api/v1/books', booksRoutes);
+app.use('/api/v1/authors', authorsRoutes);
+app.use('/api/v1/members', membersRoutes);
+
+
+// Simple health check
+app.get('/', (req: Request, res: Response) => {
+  res.send('API is running!');
 });
 
 export default app;
