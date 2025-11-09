@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import booksRoutes from './api/v1/routes/books.routes';
 import authorsRoutes from './api/v1/routes/authors.routes';
 import membersRoutes from './api/v1/routes/members.routes';
+import setupSwagger from "../src/config/swagger";
 
 const app = express();
 
@@ -12,6 +13,8 @@ app.use(express.json());
 app.use('/api/v1/books', booksRoutes);
 app.use('/api/v1/authors', authorsRoutes);
 app.use('/api/v1/members', membersRoutes);
+setupSwagger(app);
+
 
 
 // Simple health check
