@@ -8,7 +8,7 @@ export const BooksController = {
   },
 
   getById: (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const book = BooksService.getById(id);
     if (!book) return res.status(404).json({ message: 'Book not found' });
     res.json(book);
@@ -20,14 +20,15 @@ export const BooksController = {
   },
 
   update: (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const updatedBook = BooksService.update(id, req.body);
     res.json(updatedBook);
   },
 
   delete: (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const removedBook = BooksService.delete(id);
-    res.json(removedBook);
+    if (!removedBook) return res.status(404).json({ message: 'Book not found' });
+    res.json({ message: 'Book deleted successfully' });
   },
 };

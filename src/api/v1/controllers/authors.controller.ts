@@ -5,7 +5,7 @@ export const AuthorsController = {
   getAll: (req: Request, res: Response) => res.json(AuthorsService.getAll()),
 
   getById: (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const author = AuthorsService.getById(id);
     if (!author) return res.status(404).json({ message: 'Author not found' });
     res.json(author);
@@ -17,14 +17,15 @@ export const AuthorsController = {
   },
 
   update: (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const updatedAuthor = AuthorsService.update(id, req.body);
     res.json(updatedAuthor);
   },
 
   delete: (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const removedAuthor = AuthorsService.delete(id);
-    res.json(removedAuthor);
+    if (!removedAuthor) return res.status(404).json({ message: 'Author not found' });
+    res.json({ message: 'Author deleted successfully' });
   },
 };

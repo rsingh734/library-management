@@ -5,7 +5,7 @@ export const MembersController = {
   getAll: (req: Request, res: Response) => res.json(MembersService.getAll()),
 
   getById: (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const member = MembersService.getById(id);
     if (!member) return res.status(404).json({ message: 'Member not found' });
     res.json(member);
@@ -17,14 +17,15 @@ export const MembersController = {
   },
 
   update: (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const updatedMember = MembersService.update(id, req.body);
     res.json(updatedMember);
   },
 
   delete: (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const removedMember = MembersService.delete(id);
-    res.json(removedMember);
+    if (!removedMember) return res.status(404).json({ message: 'Member not found' });
+    res.json({ message: 'Member deleted successfully' });
   },
 };

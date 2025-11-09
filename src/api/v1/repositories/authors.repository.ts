@@ -1,4 +1,5 @@
 interface Author {
+  id: string;
   name: string;
   biography: string;
   nationality: string;
@@ -7,17 +8,26 @@ interface Author {
 }
 
 let authors: Author[] = [];
+let nextId = 1;
 
 export const AuthorsRepository = {
   getAll: () => authors,
-  getById: (id: number) => authors[id],
-  create: (author: Author) => {
-    authors.push(author);
-    return author;
+  getById: (id: string) => authors.find(author => author.id === id),
+  create: (author: Omit<Author, 'id'>) => {
+    const newAuthor = { ...author, id: nextId.toString() };
+    nextId++;
+    authors.push(newAuthor);
+    return newAuthor;
   },
-  update: (id: number, author: Author) => {
-    authors[id] = author;
-    return authors[id];
+  update: (id: string, author: Partial<Author>) => {
+    const index = authors.findIndex(a => a.id === id);
+    if (index === -1) return null;
+    authors[index] = { ...authors[index], ...author };
+    return authors[index];
   },
-  delete: (id: number) => authors.splice(id, 1)[0],
+  delete: (id: string) => {
+    const index = authors.findIndex(a => a.id === id);
+    if (index === -1) return null;
+    return authors.splice(index, 1)[0];
+  },
 };

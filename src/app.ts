@@ -3,6 +3,9 @@ import booksRoutes from './api/v1/routes/books.routes';
 import authorsRoutes from './api/v1/routes/authors.routes';
 import membersRoutes from './api/v1/routes/members.routes';
 import setupSwagger from "../src/config/swagger";
+import loansRoutes from './api/v1/routes/loans.routes';
+import notificationsRoutes from './api/v1/routes/notifications.routes';
+
 
 const app = express();
 
@@ -10,6 +13,8 @@ const app = express();
 app.use(express.json());
 
 // Routes
+app.use('/api/v1/loans', loansRoutes);
+app.use('/api/v1/notifications', notificationsRoutes);
 app.use('/api/v1/books', booksRoutes);
 app.use('/api/v1/authors', authorsRoutes);
 app.use('/api/v1/members', membersRoutes);

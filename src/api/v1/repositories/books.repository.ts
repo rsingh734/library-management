@@ -1,4 +1,5 @@
 interface Book {
+  id: string;
   title: string;
   authorId: number;
   ISBN: string;
@@ -10,18 +11,27 @@ interface Book {
 }
 
 let books: Book[] = [];
+let nextId = 1;
 
 export const BooksRepository = {
   getAll: () => books,
-  getById: (id: number) => books[id],
-  create: (book: Book) => {
-    books.push(book);
-    return book;
+  getById: (id: string) => books.find(book => book.id === id),
+  create: (book: Omit<Book, 'id'>) => {
+    const newBook = { ...book, id: nextId.toString() };
+    nextId++;
+    books.push(newBook);
+    return newBook;
   },
-  update: (id: number, book: Book) => {
-    books[id] = book;
-    return books[id];
+  update: (id: string, book: Partial<Book>) => {
+    const index = books.findIndex(b => b.id === id);
+    if (index === -1) return null;
+    books[index] = { ...books[index], ...book };
+    return books[index];
   },
-  delete: (id: number) => books.splice(id, 1)[0],
+  delete: (id: string) => {
+    const index = books.findIndex(b => b.id === id);
+    if (index === -1) return null;
+    return books.splice(index, 1)[0];
+  },
 };
 

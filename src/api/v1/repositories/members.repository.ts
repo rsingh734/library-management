@@ -1,5 +1,5 @@
 interface Member {
-  memberId: string;
+  id: string;
   name: string;
   joinDate: string;
   membershipType: string;
@@ -8,17 +8,26 @@ interface Member {
 }
 
 let members: Member[] = [];
+let nextId = 1;
 
 export const MembersRepository = {
   getAll: () => members,
-  getById: (id: number) => members[id],
-  create: (member: Member) => {
-    members.push(member);
-    return member;
+  getById: (id: string) => members.find(member => member.id === id),
+  create: (member: Omit<Member, 'id'>) => {
+    const newMember = { ...member, id: nextId.toString() };
+    nextId++;
+    members.push(newMember);
+    return newMember;
   },
-  update: (id: number, member: Member) => {
-    members[id] = member;
-    return members[id];
+  update: (id: string, member: Partial<Member>) => {
+    const index = members.findIndex(m => m.id === id);
+    if (index === -1) return null;
+    members[index] = { ...members[index], ...member };
+    return members[index];
   },
-  delete: (id: number) => members.splice(id, 1)[0],
+  delete: (id: string) => {
+    const index = members.findIndex(m => m.id === id);
+    if (index === -1) return null;
+    return members.splice(index, 1)[0];
+  },
 };
