@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import booksRoutes from './api/v1/routes/books.routes';
 import authorsRoutes from './api/v1/routes/authors.routes';
 import membersRoutes from './api/v1/routes/members.routes';
-import setupSwagger from "../src/config/swagger";
+import setupSwagger from "./config/swagger";
 import loansRoutes from './api/v1/routes/loans.routes';
 import notificationsRoutes from './api/v1/routes/notifications.routes';
 
