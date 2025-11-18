@@ -1,6 +1,7 @@
 interface Member {
   id: string;
   name: string;
+  email: string;
   joinDate: string;
   membershipType: string;
   borrowedBooks: number[];
