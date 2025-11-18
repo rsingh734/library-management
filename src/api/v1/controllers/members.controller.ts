@@ -19,6 +19,9 @@ export const MembersController = {
   update: (req: Request, res: Response) => {
     const id = req.params.id;
     const updatedMember = MembersService.update(id, req.body);
+    if (!updatedMember) {
+    return res.status(404).json({ message: "Member not found" });
+  }
     res.json(updatedMember);
   },
 
