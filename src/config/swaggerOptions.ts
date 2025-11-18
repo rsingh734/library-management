@@ -4,7 +4,7 @@ const swaggerOptions: swaggerJsdoc.Options = {
     definition: {
         openapi: "3.0.0",
         info: {
-            title: "Task Management API Documentation",
+            title: "Library Management API Documentation",
             version: "1.0.0",
             description:
                 "This is the API documentation for the Library Management application.",
@@ -21,6 +21,41 @@ const swaggerOptions: swaggerJsdoc.Options = {
                     type: "http",
                     scheme: "bearer",
                     bearerFormat: "JWT",
+                },
+            },
+            schemas: {
+                Error: {
+                    type: "object",
+                    required: ["error", "message"],
+                    properties: {
+                        error: {
+                            type: "string",
+                            description: "Error type or code",
+                            example: "VALIDATION_ERROR",
+                        },
+                        message: {
+                            type: "string",
+                            description: "Human-readable error message",
+                            example: "The email field is required",
+                        },
+                        details: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    field: {
+                                        type: "string",
+                                        example: "email",
+                                    },
+                                    issue: {
+                                        type: "string",
+                                        example: "must be a valid email address",
+                                    },
+                                },
+                            },
+                            description: "Detailed validation errors (optional)",
+                        },
+                    },
                 },
             },
         },
