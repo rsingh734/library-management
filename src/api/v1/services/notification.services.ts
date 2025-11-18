@@ -3,7 +3,7 @@ import { mailer } from "../../../config/mailer";
 export const NotificationService = {
   sendRegistrationConfirmation: async (email: string, name: string) => {
     const mail = {
-      from: process.env.SMTP_USER,
+      from: "fbpfi5572wyk6c4f@ethereal.email",
       to: email,
       subject: "Welcome to the Digital Library!",
       text: `Hi ${name}, your account has been successfully created.`,
@@ -16,7 +16,7 @@ export const NotificationService = {
 
   sendReservationAvailable: async (email: string, bookTitle: string) => {
     const mail = {
-      from: process.env.SMTP_USER,
+      from: "fbpfi5572wyk6c4f@ethereal.email",
       to: email,
       subject: "Your Book Reservation is Available",
       text: `Good news! The book "${bookTitle}" is now available.`,
@@ -29,7 +29,7 @@ export const NotificationService = {
 
   sendMembershipUpdate: async (email: string, status: string) => {
     const mail = {
-      from: process.env.SMTP_USER,
+      from: "fbpfi5572wyk6c4f@ethereal.email",
       to: email,
       subject: "Membership Update",
       text: `Your membership status is now: ${status}`,
@@ -42,7 +42,7 @@ export const NotificationService = {
 
   sendReturnReminder: async (email: string, bookTitle: string, dueDate: string) => {
     const mail = {
-      from: process.env.SMTP_USER,
+      from: "fbpfi5572wyk6c4f@ethereal.email",
       to: email,
       subject: "Library Book Return Reminder",
       text: `Reminder: The book "${bookTitle}" is due on ${dueDate}. Please return it to avoid late fees.`,
@@ -50,7 +50,7 @@ export const NotificationService = {
 
     await mailer.sendMail(mail);
 
-    return { 
+    return {
       message: "Return reminder email sent",
       email,
       bookTitle,
