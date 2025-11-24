@@ -1,8 +1,14 @@
-export interface Notification {
-  id: string;
-  memberId: string;
-  type: "reminder" | "return" | "general";
+export interface ApiSuccessResponse {
+  success: true;
   message: string;
-  createdAt: string;
-  sent: boolean;
+  statusCode: number;
+  data?: any;
 }
+
+export interface ApiErrorResponse {
+  success: false;
+  message: string;
+  statusCode: number;
+  error?: any;
+}
+

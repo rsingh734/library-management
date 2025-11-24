@@ -1,34 +1,40 @@
-import { Request, Response } from 'express';
-import { BooksService } from '../services/books.service';
+import { Request, Response } from "express";
+import { BooksService } from "../services/books.service";
+import { createBookSchema, updateBookSchema } from "../validators/bookValidators";
 
 export const BooksController = {
   getAll: (req: Request, res: Response) => {
-    const books = BooksService.getAll();
-    res.json(books);
+    return res.json({ message: "Books list retrieved", data: BooksService.getAll() });
   },
 
   getById: (req: Request, res: Response) => {
-    const id = req.params.id;
-    const book = BooksService.getById(id);
-    if (!book) return res.status(404).json({ message: 'Book not found' });
-    res.json(book);
+    const book = BooksService.getById(req.params.id);
+    if (!book) return res.status(404).json({ message: "Book not found" });
+    return res.json({ message: "Book retrieved", data: book });
   },
 
   create: (req: Request, res: Response) => {
-    const book = BooksService.create(req.body);
-    res.status(201).json(book);
+    const { error } = createBookSchema.validate(req.body);
+    if (error) return res.status(400).json({ message: error.message });
+
+    const newBook = BooksService.create(req.body);
+    return res.status(201).json({ message: "Book created successfully", data: newBook });
   },
 
   update: (req: Request, res: Response) => {
-    const id = req.params.id;
-    const updatedBook = BooksService.update(id, req.body);
-    res.json(updatedBook);
+    const { error } = updateBookSchema.validate(req.body);
+    if (error) return res.status(400).json({ message: error.message });
+
+    const updated = BooksService.update(req.params.id, req.body);
+    if (!updated) return res.status(404).json({ message: "Book not found" });
+
+    return res.json({ message: "Book updated", data: updated });
   },
 
   delete: (req: Request, res: Response) => {
-    const id = req.params.id;
-    const removedBook = BooksService.delete(id);
-    if (!removedBook) return res.status(404).json({ message: 'Book not found' });
-    res.json({ message: 'Book deleted successfully' });
+    const removed = BooksService.delete(req.params.id);
+    if (!removed) return res.status(404).json({ message: "Book not found" });
+
+    return res.json({ message: "Book deleted", data: removed });
   },
 };

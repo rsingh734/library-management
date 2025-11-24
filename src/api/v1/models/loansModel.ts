@@ -1,8 +1,13 @@
-export interface Loan {
-  id: string;
-  memberId: string;
-  bookId: string;
-  loanDate: string;
-  returnDate?: string;
-  status: "active" | "returned" | "late";
+export interface ApiSuccessResponse {
+  success: true;
+  message: string;
+  statusCode: number;
+  data?: any;
+}
+
+export interface ApiErrorResponse {
+  success: false;
+  message: string;
+  statusCode: number;
+  error?: any;
 }

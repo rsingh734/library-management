@@ -1,13 +1,17 @@
 import Joi from "joi";
 
-export const createNotificationSchema = Joi.object({
-  memberId: Joi.string().required(),
-  type: Joi.string().valid("reminder", "return", "general").required(),
-  message: Joi.string().min(5).required(),
+export const createRegistrationSchema = Joi.object({
+  email: Joi.string().email().required(),
+  name: Joi.string().min(2).required(),
 });
 
-export const notificationQuerySchema = Joi.object({
-  memberId: Joi.string(),
-  type: Joi.string().valid("reminder", "return", "general"),
-  sort: Joi.string().valid("asc", "desc"),
+export const createReservationSchema = Joi.object({
+  email: Joi.string().email().required(),
+  bookTitle: Joi.string().min(2).required(),
+});
+
+export const createReturnReminderSchema = Joi.object({
+  email: Joi.string().email().required(),
+  bookTitle: Joi.string().min(2).required(),
+  dueDate: Joi.date().required(),
 });
