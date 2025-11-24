@@ -32,6 +32,7 @@ app.use('/api/v1/authors', authorsRoutes);
 app.use('/api/v1/members', membersRoutes);
 setupSwagger(app);
 
+
 // Simple health check
 app.get('/', (req: Request, res: Response) => {
   res.send('API is running!');
