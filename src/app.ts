@@ -9,6 +9,8 @@ import loansRoutes from './api/v1/routes/loans.routes';
 import notificationsRoutes from './api/v1/routes/notifications.routes';
 import { getHelmetConfig } from './config/helmetConfig';
 import getCorsOptions from './config/corsConfig';
+import errorHandler from "../src/middleware/errorHandler";
+
 
 // Load environment variables
 dotenv.config();
@@ -23,6 +25,8 @@ app.use(cors(getCorsOptions()));
 
 // Built-in JSON middleware
 app.use(express.json());
+
+app.use(errorHandler); 
 
 // Routes
 app.use('/api/v1/loans', loansRoutes);

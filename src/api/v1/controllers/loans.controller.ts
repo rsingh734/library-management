@@ -12,7 +12,8 @@ export const borrowBook = (req: Request, res: Response) => {
       message: error.details[0].message,
       statusCode: 400,
     };
-    return res.status(response.statusCode).json(response);
+    res.status(response.statusCode).json(response);
+    return;
   }
 
   const loan = loansService.borrowBook(req.body);
@@ -24,7 +25,7 @@ export const borrowBook = (req: Request, res: Response) => {
     data: loan,
   };
 
-  return res.status(response.statusCode).json(response);
+  res.status(response.statusCode).json(response);
 };
 
 export const returnBook = (req: Request, res: Response) => {
@@ -36,7 +37,8 @@ export const returnBook = (req: Request, res: Response) => {
       message: error.details[0].message,
       statusCode: 400,
     };
-    return res.status(response.statusCode).json(response);
+    res.status(response.statusCode).json(response);
+    return;
   }
 
   const loan = loansService.returnBook(req.body);
@@ -48,5 +50,5 @@ export const returnBook = (req: Request, res: Response) => {
     data: loan,
   };
 
-  return res.status(response.statusCode).json(response);
+  res.status(response.statusCode).json(response);
 };

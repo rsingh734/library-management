@@ -3,17 +3,17 @@ import { AuthorsService } from "../services/authors.service";
 import { createAuthorSchema, updateAuthorSchema } from "../validators/authorsValidators";
 
 export const AuthorsController = {
-  getAll: (req: Request, res: Response) => {
+  getAll: (req: Request, res: Response): Response => {
     return res.json({ message: "Authors list retrieved", data: AuthorsService.getAll() });
   },
 
-  getById: (req: Request, res: Response) => {
+  getById: (req: Request, res: Response): Response => {
     const author = AuthorsService.getById(req.params.id);
     if (!author) return res.status(404).json({ message: "Author not found" });
     return res.json({ message: "Author retrieved", data: author });
   },
 
-  create: (req: Request, res: Response) => {
+  create: (req: Request, res: Response): Response => {
     const { error } = createAuthorSchema.validate(req.body);
     if (error) return res.status(400).json({ message: error.message });
 
@@ -21,7 +21,7 @@ export const AuthorsController = {
     return res.status(201).json({ message: "Author created", data: newAuthor });
   },
 
-  update: (req: Request, res: Response) => {
+  update: (req: Request, res: Response): Response => {
     const { error } = updateAuthorSchema.validate(req.body);
     if (error) return res.status(400).json({ message: error.message });
 
@@ -31,7 +31,7 @@ export const AuthorsController = {
     return res.json({ message: "Author updated", data: updated });
   },
 
-  delete: (req: Request, res: Response) => {
+  delete: (req: Request, res: Response): Response => {
     const removed = AuthorsService.delete(req.params.id);
     if (!removed) return res.status(404).json({ message: "Author not found" });
 
