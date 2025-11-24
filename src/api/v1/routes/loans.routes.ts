@@ -1,3 +1,5 @@
+import authenticate from "../../../middleware/authenticate";
+import isAuthorized from "../../../middleware/authorize";
 import { Router } from 'express';
 import { borrowBook, returnBook } from '../controllers/loans.controller';
 
@@ -28,7 +30,15 @@ const router = Router();
  *       201:
  *         description: Book borrowed successfully
  */
-router.post('/borrow', borrowBook);
+router.post(
+  '/borrow',
+  authenticate,
+  isAuthorized({
+    hasRole: ["admin", "manager", "user"],
+    allowSameUser: true
+  }),
+  borrowBook
+);
 
 /**
  * @swagger
@@ -55,6 +65,14 @@ router.post('/borrow', borrowBook);
  *       200:
  *         description: Book returned successfully
  */
-router.post('/return', returnBook);
+router.post(
+  '/return',
+  authenticate,
+  isAuthorized({
+    hasRole: ["admin", "manager", "user"],
+    allowSameUser: true
+  }),
+  returnBook
+);
 
 export default router;

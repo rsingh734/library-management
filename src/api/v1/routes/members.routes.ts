@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { MembersController } from '../controllers/members.controller';
+import authenticate from "../../../middleware/authenticate";
+import isAuthorized from "../../../middleware/authorize";
 
 const router = Router();
 
@@ -14,7 +16,12 @@ const router = Router();
  *       200:
  *         description: List of members
  */
-router.get('/', MembersController.getAll);
+router.get(
+  '/',
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] }),
+  MembersController.getAll
+);
 
 /**
  * @swagger
@@ -36,7 +43,15 @@ router.get('/', MembersController.getAll);
  *       404:
  *         description: Member not found
  */
-router.get('/:id', MembersController.getById);
+router.get(
+  '/:id',
+  authenticate,
+  isAuthorized({
+    hasRole: ["admin", "manager"],
+    allowSameUser: true,
+  }),
+  MembersController.getById
+);
 
 /**
  * @swagger
@@ -69,7 +84,13 @@ router.get('/:id', MembersController.getById);
  *       201:
  *         description: Member created successfully
  */
-router.post('/', MembersController.create);
+router.post(
+  '/',
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager", "user"] }),
+  MembersController.create
+);
+
 
 /**
  * @swagger
@@ -107,7 +128,15 @@ router.post('/', MembersController.create);
  *       200:
  *         description: Member updated successfully
  */
-router.put('/:id', MembersController.update);
+router.put(
+  '/:id',
+  authenticate,
+  isAuthorized({
+    hasRole: ["admin", "manager","user" ],
+    allowSameUser: true,
+  }),
+  MembersController.update
+);
 
 /**
  * @swagger
@@ -127,6 +156,11 @@ router.put('/:id', MembersController.update);
  *       200:
  *         description: Member deleted successfully
  */
-router.delete('/:id', MembersController.delete);
+router.delete(
+  '/:id',
+  authenticate,
+  isAuthorized({ hasRole: ["admin"] }),
+  MembersController.delete
+);
 
 export default router;

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { BooksController } from '../controllers/books.controller';
-
+import authenticate from "../../../middleware/authenticate";
+import isAuthorized from "../../../middleware/authorize";
 const router = Router();
 
 /**
@@ -14,7 +15,7 @@ const router = Router();
  *       200:
  *         description: List of books
  */
-router.get('/', BooksController.getAll);
+router.get('/', authenticate, BooksController.getAll);
 
 /**
  * @swagger
@@ -36,7 +37,7 @@ router.get('/', BooksController.getAll);
  *       404:
  *         description: Book not found
  */
-router.get('/:id', BooksController.getById);
+router.get('/:id', authenticate,  BooksController.getById);
 
 /**
  * @swagger
@@ -72,7 +73,7 @@ router.get('/:id', BooksController.getById);
  *       201:
  *         description: Book created successfully
  */
-router.post('/', BooksController.create);
+router.post('/', authenticate, isAuthorized({ hasRole: ["admin" , "manager"] }), BooksController.create);
 
 /**
  * @swagger
@@ -115,7 +116,13 @@ router.post('/', BooksController.create);
  *       200:
  *         description: Book updated successfully
  */
-router.put('/:id', BooksController.update);
+router.put(
+  '/{id}',
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] }),
+  BooksController.update
+);
+
 
 /**
  * @swagger
@@ -135,6 +142,11 @@ router.put('/:id', BooksController.update);
  *       200:
  *         description: Book deleted successfully
  */
-router.delete('/:id', BooksController.delete);
+router.delete(
+  '/:id',
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] }),
+  BooksController.delete
+);
 
 export default router;

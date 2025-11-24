@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { AuthorsController } from '../controllers/authors.controller';
+import authenticate from "../../../middleware/authenticate";
+import isAuthorized from "../../../middleware/authorize";
 
 const router = Router();
 
@@ -14,7 +16,7 @@ const router = Router();
  *       200:
  *         description: List of authors
  */
-router.get('/', AuthorsController.getAll);
+router.get('/', authenticate, AuthorsController.getAll);
 
 /**
  * @swagger
@@ -36,7 +38,7 @@ router.get('/', AuthorsController.getAll);
  *       404:
  *         description: Author not found
  */
-router.get('/:id', AuthorsController.getById);
+router.get('/:id', authenticate, AuthorsController.getById);
 
 /**
  * @swagger
@@ -65,7 +67,12 @@ router.get('/:id', AuthorsController.getById);
  *       201:
  *         description: Author created successfully
  */
-router.post('/', AuthorsController.create);
+router.post(
+  '/',
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] }),
+  AuthorsController.create
+);
 
 /**
  * @swagger
@@ -101,7 +108,12 @@ router.post('/', AuthorsController.create);
  *       200:
  *         description: Author updated successfully
  */
-router.put('/:id', AuthorsController.update);
+router.put(
+  '/:id',
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] }),
+  AuthorsController.update
+);
 
 /**
  * @swagger
@@ -121,6 +133,11 @@ router.put('/:id', AuthorsController.update);
  *       200:
  *         description: Author deleted successfully
  */
-router.delete('/:id', AuthorsController.delete);
+router.delete(
+  '/:id',
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] }),
+  AuthorsController.delete
+);
 
 export default router;

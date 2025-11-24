@@ -10,6 +10,12 @@ import notificationsRoutes from './api/v1/routes/notifications.routes';
 import { getHelmetConfig } from './config/helmetConfig';
 import getCorsOptions from './config/corsConfig';
 import errorHandler from "../src/middleware/errorHandler";
+import {
+    accessLogger,
+    errorLogger,
+    consoleLogger,
+} from "../src/middleware/logger";
+
 
 
 // Load environment variables
@@ -42,4 +48,14 @@ app.get('/', (req: Request, res: Response) => {
   res.send('API is running!');
 });
 
+
+if (process.env.NODE_ENV === "production") {
+    // In production, log to files
+    app.use(accessLogger);
+    app.use(errorLogger);
+} else {
+    // In development, log to console for immediate feedback
+    app.use(consoleLogger);
+}
+    
 export default app;

@@ -7,3 +7,5 @@ serviceKey.json
 serviceKey.json
 .env
 >>>>>>> a43ba492387bbaa1357b7e5a7a9884a5589bbfd7
+
+*.log

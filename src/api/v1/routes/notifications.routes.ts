@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { NotificationsController } from "../controllers/notifications.controller";
+import authenticate from "../../../middleware/authenticate";
+import isAuthorized from "../../../middleware/authorize";
 
 const router = Router();
 
@@ -31,7 +33,12 @@ const router = Router();
  *       500:
  *         description: Failed to send email
  */
-router.post("/registration", NotificationsController.sendRegistration);
+router.post(
+  "/registration",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] }),
+  NotificationsController.sendRegistration
+);
 
 /**
  * @swagger
@@ -61,7 +68,12 @@ router.post("/registration", NotificationsController.sendRegistration);
  *       500:
  *         description: Failed to send email
  */
-router.post("/reservation", NotificationsController.sendReservationNotice);
+router.post(
+  "/reservation",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] }),
+  NotificationsController.sendReservationNotice
+);
 
 /**
  * @swagger
@@ -95,7 +107,12 @@ router.post("/reservation", NotificationsController.sendReservationNotice);
  *       500:
  *         description: Failed to send email
  */
-router.post("/return-reminder", NotificationsController.sendReturnReminder);
+router.post(
+  "/return-reminder",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] }),
+  NotificationsController.sendReturnReminder
+);
 
 /**
  * @swagger
@@ -135,7 +152,13 @@ router.post("/return-reminder", NotificationsController.sendReturnReminder);
  *       500:
  *         description: Failed to retrieve notifications
  */
-router.get("/", NotificationsController.getAll);
+router.get(
+  "/",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] }),
+  NotificationsController.getAll
+);
+
 
 export default router;
 
