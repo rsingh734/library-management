@@ -1,4 +1,8 @@
+
 import { mailer } from "../../../config/mailer";
+import { Notification } from "../models/notificationModel";
+
+const notifications: Notification[] = [];
 
 export const NotificationService = {
   sendRegistrationConfirmation: async (email: string, name: string) => {
@@ -27,19 +31,6 @@ export const NotificationService = {
     return { message: "Reservation notification sent", email };
   },
 
-  sendMembershipUpdate: async (email: string, status: string) => {
-    const mail = {
-      from: "fbpfi5572wyk6c4f@ethereal.email",
-      to: email,
-      subject: "Membership Update",
-      text: `Your membership status is now: ${status}`,
-    };
-
-    await mailer.sendMail(mail);
-
-    return { message: "Membership email sent", email };
-  },
-
   sendReturnReminder: async (email: string, bookTitle: string, dueDate: string) => {
     const mail = {
       from: "fbpfi5572wyk6c4f@ethereal.email",
@@ -56,5 +47,35 @@ export const NotificationService = {
       bookTitle,
       dueDate
     };
-  }
+  },
+
+  recordNotification: (data: Omit<Notification, "id" | "createdAt" | "type">, type: Notification["type"]) => {
+    const newNotification: Notification = {
+      id: (notifications.length + 1).toString(),
+      ...data,
+      type,
+      createdAt: new Date().toISOString(),
+    };
+    notifications.push(newNotification);
+    return newNotification;
+  },
+
+  // NEW: Get all notifications with filtering and sorting
+  getAll: (filter?: { type?: string; email?: string }, sortBy?: string, order: "asc" | "desc" = "asc") => {
+    let result = [...notifications];
+
+    // Apply filters
+    if (filter?.type) result = result.filter(n => n.type === filter.type);
+    if (filter?.email) result = result.filter(n => n.email === filter.email);
+
+    // Apply sorting
+    if (sortBy === "createdAt") {
+      result.sort((a, b) => {
+        if (order === "asc") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        else return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+    }
+
+    return result;
+  },
 };

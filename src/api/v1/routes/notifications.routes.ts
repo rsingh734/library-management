@@ -97,6 +97,46 @@ router.post("/reservation", NotificationsController.sendReservationNotice);
  */
 router.post("/return-reminder", NotificationsController.sendReturnReminder);
 
+/**
+ * @swagger
+ * /notifications:
+ *   get:
+ *     summary: Get all notifications with optional filtering and sorting
+ *     tags:
+ *       - Notifications
+ *     parameters:
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [registration, reservation, returnReminder]
+ *         description: Filter notifications by type
+ *       - in: query
+ *         name: email
+ *         schema:
+ *           type: string
+ *           format: email
+ *         description: Filter notifications by recipient email
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum: [createdAt]
+ *         description: Field to sort by
+ *       - in: query
+ *         name: order
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *         description: Sort order (ascending or descending)
+ *     responses:
+ *       200:
+ *         description: List of notifications
+ *       500:
+ *         description: Failed to retrieve notifications
+ */
+router.get("/", NotificationsController.getAll);
+
 export default router;
 
 
