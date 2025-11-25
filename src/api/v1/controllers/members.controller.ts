@@ -1,60 +1,66 @@
-import { Request, Response } from 'express';
-import { MembersService } from '../services/members.service';
+import { Request, Response, NextFunction } from "express";
+import { db } from "../../../config/firebase";
 import { createMemberSchema, updateMemberSchema } from "../validators/membersValidators";
-import { ApiResponse } from "../models/responseMode";
 
 export const MembersController = {
-  getAll: (req: Request, res: Response) => {
-    const members = MembersService.getAll();
-    res.json({ message: "Members list retrieved", data: members });
+  getAll: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const snapshot = await db.collection("members").get();
+      const members = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      res.json({ message: "Members list retrieved", data: members });
+    } catch (error) {
+      next(error);
+    }
   },
 
-  getById: (req: Request, res: Response) => {
-    const member = MembersService.getById(req.params.id);
-    if (!member) {
-      res.status(404).json({ message: "Member not found" });
-      return;
+  getById: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const doc = await db.collection("members").doc(req.params.id).get();
+      if (!doc.exists) return res.status(404).json({ message: "Member not found" });
+      res.json({ message: "Member retrieved", data: { id: doc.id, ...doc.data() } });
+    } catch (error) {
+      next(error);
     }
-    res.json({ message: "Member retrieved", data: member });
   },
 
-  create: (req: Request, res: Response) => {
-    const { error } = createMemberSchema.validate(req.body);
-    if (error) {
-      res.status(400).json({ message: error.message });
-      return;
+  create: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { error } = createMemberSchema.validate(req.body);
+      if (error) return res.status(400).json({ message: error.message });
+
+      const docRef = await db.collection("members").add(req.body);
+      res.status(201).json({ message: "Member created successfully", id: docRef.id });
+    } catch (error) {
+      next(error);
     }
-
-    const member = MembersService.create(req.body);
-    const response: ApiResponse<any> = {
-      message: "Member created successfully",
-      data: member,
-    };
-
-    res.status(201).json(response);
   },
 
-  update: (req: Request, res: Response) => {
-    const { error } = updateMemberSchema.validate(req.body);
-    if (error) {
-      res.status(400).json({ message: error.message });
-      return;
-    }
+  update: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { error } = updateMemberSchema.validate(req.body);
+      if (error) return res.status(400).json({ message: error.message });
 
-    const updated = MembersService.update(req.params.id, req.body);
-    if (!updated) {
-      res.status(404).json({ message: "Member not found" });
-      return;
+      const docRef = db.collection("members").doc(req.params.id);
+      const doc = await docRef.get();
+      if (!doc.exists) return res.status(404).json({ message: "Member not found" });
+
+      await docRef.update(req.body);
+      res.json({ message: "Member updated", data: req.body });
+    } catch (error) {
+      next(error);
     }
-    res.json({ message: "Member updated", data: updated });
   },
 
-  delete: (req: Request, res: Response) => {
-    const deleted = MembersService.delete(req.params.id);
-    if (!deleted) {
-      res.status(404).json({ message: "Member not found" });
-      return;
+  delete: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const docRef = db.collection("members").doc(req.params.id);
+      const doc = await docRef.get();
+      if (!doc.exists) return res.status(404).json({ message: "Member not found" });
+
+      await docRef.delete();
+      res.json({ message: "Member deleted" });
+    } catch (error) {
+      next(error);
     }
-    res.json({ message: "Member deleted successfully", data: deleted });
   },
 };
