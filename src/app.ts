@@ -15,6 +15,7 @@ import {
     errorLogger,
     consoleLogger,
 } from "../src/middleware/logger";
+import adminRoutes from "../src/api/v1/routes/admin.routes";
 
 
 
@@ -34,6 +35,8 @@ app.use(express.json());
 
 app.use(errorHandler); 
 
+app.use("/api/v1/admin", adminRoutes);
+
 // Routes
 app.use('/api/v1/loans', loansRoutes);
 app.use('/api/v1/notifications', notificationsRoutes);
@@ -47,7 +50,6 @@ setupSwagger(app);
 app.get('/', (req: Request, res: Response) => {
   res.send('API is running!');
 });
-
 
 if (process.env.NODE_ENV === "production") {
     // In production, log to files

@@ -15,7 +15,7 @@ const router = Router();
  *       200:
  *         description: List of books
  */
-router.get('/', authenticate, BooksController.getAll);
+router.get("/", authenticate, BooksController.getAll);
 
 /**
  * @swagger
@@ -37,7 +37,7 @@ router.get('/', authenticate, BooksController.getAll);
  *       404:
  *         description: Book not found
  */
-router.get('/:id', authenticate,  BooksController.getById);
+router.get("/:id", authenticate, BooksController.getById);
 
 /**
  * @swagger
@@ -73,7 +73,12 @@ router.get('/:id', authenticate,  BooksController.getById);
  *       201:
  *         description: Book created successfully
  */
-router.post('/', authenticate, isAuthorized({ hasRole: ["admin" , "manager"] }), BooksController.create);
+router.post(
+  "/",
+  authenticate,
+  isAuthorized({ hasRole: ["admin", "manager"] }),
+  BooksController.create
+);
 
 /**
  * @swagger
@@ -117,12 +122,11 @@ router.post('/', authenticate, isAuthorized({ hasRole: ["admin" , "manager"] }),
  *         description: Book updated successfully
  */
 router.put(
-  '/{id}',
+  "/:id",
   authenticate,
-  isAuthorized({ hasRole: ["admin", "manager"] }),
+  isAuthorized({ hasRole: ["admin", "manager"], allowSameUser: true }),
   BooksController.update
 );
-
 
 /**
  * @swagger

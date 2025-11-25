@@ -1,53 +1,77 @@
-import { Request, Response } from "express";
-import { BooksService } from "../services/books.service";
-import { createBookSchema, updateBookSchema } from "../validators/bookValidators";
+import { Request, Response, NextFunction } from "express";
+import { db } from "../../..//config/firebase"; // your firebase setup
+import { createBookSchema } from "../validators/bookValidators";
 
 export const BooksController = {
-  getAll: (req: Request, res: Response) => {
-    res.json({ message: "Books list retrieved", data: BooksService.getAll() });
+  getAll: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const snapshot = await db.collection("books").get();
+      const books = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      res.json({ message: "Books list retrieved", data: books });
+    } catch (error) {
+      next(error);
+    }
   },
 
-  getById: (req: Request, res: Response) => {
-    const book = BooksService.getById(req.params.id);
-    if (!book) {
-      res.status(404).json({ message: "Book not found" });
-      return;
+  getById: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const doc = await db.collection("books").doc(req.params.id).get();
+      if (!doc.exists) {
+        return res.status(404).json({ message: "Book not found" });
+      }
+      res.json({ message: "Book retrieved", data: { id: doc.id, ...doc.data() } });
+    } catch (error) {
+      next(error);
     }
-    res.json({ message: "Book retrieved", data: book });
   },
 
-  create: (req: Request, res: Response) => {
-    const { error } = createBookSchema.validate(req.body);
-    if (error) {
-      res.status(400).json({ message: error.message });
-      return;
-    }
+  create: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { error } = createBookSchema.validate(req.body);
+      if (error) {
+        return res.status(400).json({ message: error.message });
+      }
 
-    const newBook = BooksService.create(req.body);
-    res.status(201).json({ message: "Book created successfully", data: newBook });
+      const docRef = await db.collection("books").add(req.body);
+      res.status(201).json({ message: "Book created successfully", id: docRef.id });
+    } catch (error) {
+      next(error);
+    }
   },
 
-  update: (req: Request, res: Response) => {
-    const { error } = updateBookSchema.validate(req.body);
-    if (error) {
-      res.status(400).json({ message: error.message });
-      return;
-    }
+  update: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { error } = createBookSchema.validate(req.body);
+      if (error) {
+        return res.status(400).json({ message: error.message });
+      }
 
-    const updated = BooksService.update(req.params.id, req.body);
-    if (!updated) {
-      res.status(404).json({ message: "Book not found" });
-      return;
+      const docRef = db.collection("books").doc(req.params.id);
+      const doc = await docRef.get();
+      if (!doc.exists) {
+        return res.status(404).json({ message: "Book not found" });
+      }
+
+      await docRef.update(req.body);
+      res.json({ message: "Book updated", data: req.body });
+    } catch (error) {
+      next(error);
     }
-    res.json({ message: "Book updated", data: updated });
   },
 
-  delete: (req: Request, res: Response) => {
-    const removed = BooksService.delete(req.params.id);
-    if (!removed) {
-      res.status(404).json({ message: "Book not found" });
-      return;
+  delete: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const docRef = db.collection("books").doc(req.params.id);
+      const doc = await docRef.get();
+      if (!doc.exists) {
+        return res.status(404).json({ message: "Book not found" });
+      }
+
+      await docRef.delete();
+      res.json({ message: "Book deleted" });
+    } catch (error) {
+      next(error);
     }
-    res.json({ message: "Book deleted", data: removed });
   },
 };
+
