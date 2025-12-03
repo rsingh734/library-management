@@ -93,6 +93,10 @@ src/
 └── app.ts
 
 ## Quick Start
+## Clone the Repository
+```bash
+git clone https://github.com/<YOUR_USERNAME>/<YOUR_REPO>.git
+cd <YOUR_REPO>
 
 ### Install dependencies
 ```bash
@@ -106,3 +110,9 @@ PORT=5000
 
 ### Run The Project
 npm run dev
+
+## Server will run at:
+http://localhost:5000
+
+##Swagger documentation:
+http://localhost:5000/api-docs
